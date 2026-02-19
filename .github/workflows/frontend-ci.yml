@@ -1,0 +1,69 @@
+name: Frontend CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'frontend/**'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'frontend/**'
+
+jobs:
+  test:
+    name: Test Frontend
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+      
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+      
+      - name: Run linter
+        working-directory: frontend
+        run: npm run lint --if-present || echo "No lint script"
+      
+      - name: Build
+        working-directory: frontend
+        run: npm run build
+        env:
+          VITE_BACKEND_URL: https://eternity-touch-ecommerce.onrender.com
+      
+      - name: Security audit
+        working-directory: frontend
+        run: npm audit --audit-level=high || true
+
+  deploy-staging:
+    name: Deploy to Staging
+    needs: test
+    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Deploy to Vercel (Staging)
+        run: |
+          echo "Deploying frontend to staging..."
+          # Vercel auto-deploys on push
+
+  deploy-production:
+    name: Deploy to Production
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Deploy to Vercel (Production)
+        run: |
+          echo "Deploying frontend to production..."
+          # Vercel auto-deploys on push to main

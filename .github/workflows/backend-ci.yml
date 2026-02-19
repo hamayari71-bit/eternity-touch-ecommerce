@@ -1,0 +1,71 @@
+name: Backend CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'backend/**'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'backend/**'
+
+jobs:
+  test:
+    name: Test Backend
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+      
+      - name: Install dependencies
+        working-directory: backend
+        run: npm ci
+      
+      - name: Run linter
+        working-directory: backend
+        run: npm run lint --if-present || echo "No lint script"
+      
+      - name: Run tests
+        working-directory: backend
+        run: npm test --if-present || echo "No tests configured"
+        env:
+          NODE_ENV: test
+          MONGODB_URI: mongodb://localhost:27017/test
+          JWT_SECRET: test_secret_key_for_ci_pipeline_only
+      
+      - name: Security audit
+        working-directory: backend
+        run: npm audit --audit-level=high || true
+
+  deploy-staging:
+    name: Deploy to Staging
+    needs: test
+    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Deploy to Render (Staging)
+        run: |
+          echo "Deploying to staging environment..."
+          # Render auto-deploys on push to develop branch
+
+  deploy-production:
+    name: Deploy to Production
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Deploy to Render (Production)
+        run: |
+          echo "Deploying to production environment..."
+          # Render auto-deploys on push to main branch

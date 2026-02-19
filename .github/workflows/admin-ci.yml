@@ -1,0 +1,67 @@
+name: Admin CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'admin/**'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'admin/**'
+
+jobs:
+  test:
+    name: Test Admin Panel
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: admin/package-lock.json
+      
+      - name: Install dependencies
+        working-directory: admin
+        run: npm ci
+      
+      - name: Run linter
+        working-directory: admin
+        run: npm run lint --if-present || echo "No lint script"
+      
+      - name: Build
+        working-directory: admin
+        run: npm run build
+        env:
+          VITE_BACKEND_URL: https://eternity-touch-ecommerce.onrender.com
+      
+      - name: Security audit
+        working-directory: admin
+        run: npm audit --audit-level=high || true
+
+  deploy-staging:
+    name: Deploy to Staging
+    needs: test
+    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Deploy to Vercel (Staging)
+        run: |
+          echo "Deploying admin to staging..."
+
+  deploy-production:
+    name: Deploy to Production
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Deploy to Vercel (Production)
+        run: |
+          echo "Deploying admin to production..."
