@@ -2,13 +2,10 @@ name: Admin CI/CD
 
 on:
   push:
-    branches: [main, develop]
-    paths:
-      - 'admin/**'
+    branches: [main, develop, feature/test-pipeline]
   pull_request:
     branches: [main, develop]
-    paths:
-      - 'admin/**'
+  workflow_dispatch:
 
 jobs:
   test:
@@ -23,8 +20,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          cache: 'npm'
-          cache-dependency-path: admin/package-lock.json
       
       - name: Install dependencies
         working-directory: admin
