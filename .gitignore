@@ -37,3 +37,15 @@ invoices/
 # Temporary files
 *.tmp
 *.temp
+
+# Test files with potential secrets
+test-*.js
+send-test-*.js
+setup-*.js
+
+# Documentation files
+*.md
+!README.md
+
+# Scripts
+backend/scripts/

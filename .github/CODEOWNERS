@@ -1,0 +1,14 @@
+# Code owners for pull request reviews
+# These owners will be automatically requested for review when someone opens a pull request
+
+# Backend
+/backend/ @hamayari71-bit
+
+# Frontend
+/frontend/ @hamayari71-bit
+
+# Admin
+/admin/ @hamayari71-bit
+
+# CI/CD
+/.github/ @hamayari71-bit
