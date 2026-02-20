@@ -1,4 +1,5 @@
 import express from 'express';
+// Trigger workflow
 import cors from 'cors';
 import 'dotenv/config';
 import connectDB from './config/mongodb.js';
