@@ -9,6 +9,7 @@ on:
     branches: [main, develop]
     paths:
       - 'forever/admin/**'
+  workflow_dispatch:
 
 jobs:
   test:
