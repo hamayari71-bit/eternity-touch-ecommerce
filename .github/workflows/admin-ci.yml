@@ -22,21 +22,21 @@ jobs:
           node-version: '18'
       
       - name: Install dependencies
-        working-directory: forever/admin
+        working-directory: admin
         run: npm ci
       
       - name: Run linter
-        working-directory: forever/admin
+        working-directory: admin
         run: npm run lint --if-present || echo "No lint script"
       
       - name: Build
-        working-directory: forever/admin
+        working-directory: admin
         run: npm run build
         env:
           VITE_BACKEND_URL: https://eternity-touch-ecommerce.onrender.com
       
       - name: Security audit
-        working-directory: forever/admin
+        working-directory: admin
         run: npm audit --audit-level=high || true
 
   deploy-staging:

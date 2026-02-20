@@ -22,15 +22,15 @@ jobs:
           node-version: '18'
       
       - name: Install dependencies
-        working-directory: forever/backend
+        working-directory: backend
         run: npm ci
       
       - name: Run linter
-        working-directory: forever/backend
+        working-directory: backend
         run: npm run lint --if-present || echo "No lint script"
       
       - name: Run tests
-        working-directory: forever/backend
+        working-directory: backend
         run: npm test --if-present || echo "No tests configured"
         env:
           NODE_ENV: test
@@ -38,7 +38,7 @@ jobs:
           JWT_SECRET: test_secret_key_for_ci_pipeline_only
       
       - name: Security audit
-        working-directory: forever/backend
+        working-directory: backend
         run: npm audit --audit-level=high || true
 
   deploy-staging:
