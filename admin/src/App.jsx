@@ -25,6 +25,7 @@ const Loyalty = lazy(() => import('./pages/Loyalty'));
 const QA = lazy(() => import('./pages/QA'));
 const AbandonedCarts = lazy(() => import('./pages/AbandonedCarts'));
 const RecommendationStats = lazy(() => import('./pages/RecommendationStats'));
+const Settings = lazy(() => import('./pages/Settings'));
 
 export const backendUrl = import.meta.env.VITE_BACKEND_URL;
 // Removed console.log for production
@@ -66,6 +67,7 @@ const App = () => {
             <Route path="/qa" element={<QA token={token} />} />
             <Route path="/coupons" element={<Coupons token={token} />} />
             <Route path="/recommendations" element={<RecommendationStats token={token} />} />
+            <Route path="/settings" element={<Settings token={token} />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </AdminLayout>

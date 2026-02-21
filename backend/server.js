@@ -4,6 +4,7 @@ import cors from 'cors';
 import 'dotenv/config';
 import connectDB from './config/mongodb.js';
 import connectCloudinary from './config/cloudinary.js';
+import { initializeAdmin } from './config/initAdmin.js';
 import helmet from 'helmet';
 import mongoSanitize from 'express-mongo-sanitize';
 import xss from 'xss-clean';
@@ -44,8 +45,10 @@ if (process.env.NODE_ENV === 'production' && process.env.SENTRY_DSN) {
 
 // Connect to database and cloudinary (skip in test environment)
 if (process.env.NODE_ENV !== 'test') {
-    connectDB();
-    connectCloudinary();
+    await connectDB();
+    await connectCloudinary();
+    // Initialize admin user after DB connection
+    await initializeAdmin();
 }
 
 // Security middlewares
