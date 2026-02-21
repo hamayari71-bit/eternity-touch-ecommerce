@@ -23,7 +23,9 @@ const productSchema = new mongoose.Schema({
         date: { type: Date, default: Date.now }
     }],
     averageRating: { type: Number, default: 0 },
-    totalReviews: { type: Number, default: 0 }
+    totalReviews: { type: Number, default: 0 },
+    // Sales tracking
+    soldCount: { type: Number, default: 0 } // Number of times this product was sold
 })
 
 const productModel =mongoose.models.product || mongoose.model("product", productSchema);
