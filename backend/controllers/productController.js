@@ -407,4 +407,25 @@ const getReviews = async (req, res) => {
     }
 };
 
-export { listProducts, addProduct, removeProduct, singleProduct, updateProduct, listProductsPaginated, addReview, getReviews }
+// Get best sellers based on actual sales
+const getBestSellers = async (req, res) => {
+    try {
+        // Récupérer les produits triés par nombre de ventes (soldCount)
+        const bestSellers = await productModel
+            .find({ stock: { $gt: 0 } }) // Seulement les produits en stock
+            .sort({ soldCount: -1 }) // Trier par nombre de ventes décroissant
+            .limit(10) // Limiter à 10 produits
+            .select('name description price images category subCategory sizes bestseller stock discount discountEndDate averageRating totalReviews soldCount');
+
+        res.json({
+            success: true,
+            products: bestSellers
+        });
+
+    } catch (error) {
+        logger.error('PRODUCT', 'Error fetching best sellers', { error: error.message });
+        res.json({ success: false, message: error.message });
+    }
+};
+
+export { listProducts, addProduct, removeProduct, singleProduct, updateProduct, listProductsPaginated, addReview, getReviews, getBestSellers };
