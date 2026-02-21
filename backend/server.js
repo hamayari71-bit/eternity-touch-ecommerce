@@ -51,6 +51,9 @@ if (process.env.NODE_ENV !== 'test') {
     await initializeAdmin();
 }
 
+// Trust proxy for Render deployment
+app.set('trust proxy', 1);
+
 // Security middlewares
 app.use(helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" }
